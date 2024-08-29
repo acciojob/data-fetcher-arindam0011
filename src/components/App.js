@@ -12,10 +12,9 @@
           const response = await fetch('https://dummyjson.com/products');
           
           const data = await response.json();
-          console.log(data);
           
-          if (data && data.products && data.products.length > 0) {
-            setApiData(data.products);
+          if (data) {
+            setApiData(data);
           } else {
             setApiData([]);
           }
