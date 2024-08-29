@@ -12,6 +12,8 @@
           const response = await fetch('https://dummyjson.com/products');
           
           const data = await response.json();
+          console.log(data);
+          
           if (data && data.products && data.products.length > 0) {
             setApiData(data.products);
           } else {
@@ -26,7 +28,10 @@
     }, []);
 
     if (error) {
-      return <h1>{'No data found'}</h1>;
+      return <h1>{error}</h1>;
+    }
+    if(apiData===undefined){
+     return <h1>No data found</h1>
     }
 
 
