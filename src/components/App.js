@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import './../styles/App.css';
 import 'regenerator-runtime/runtime';
 
-const App = () => {
+const DataFetcher = () => {
   const [apiData, setApiData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -12,34 +11,36 @@ const App = () => {
       try {
         const response = await fetch('https://dummyjson.com/products');
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Failed to fetch data');
         }
         const data = await response.json();
-        setApiData(data.products);
+        if (data && data.products && data.products.length > 0) {
+          setApiData(data.products);
+        } else {
+          setApiData([]); // No data found
+        }
       } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
+        setError('An error occurred: ' + error.message);
+        setApiData([]);
       }
     };
-
     fetchData();
   }, []);
 
+  if (error) {
+    return <h4>{error}</h4>;
+  }
+
+  if (apiData.length === 0 && !error) {
+    return <h4>No data found</h4>;
+  }
+
   return (
     <div id="main">
-      {isLoading ? (
-        <h4>Loading...</h4>
-      ) : error ? (
-        <h4>Error: {error}</h4>
-      ) : (
-        <>
-          <h1 id="header">Data Fetched from API</h1>
-          <pre id="output">{JSON.stringify(apiData, null, 2)}</pre>
-        </>
-      )}
+      <h1 id="header">Data Fetched from API</h1>
+      <pre id="output">{JSON.stringify(apiData, null, 2)}</pre>
     </div>
   );
 };
 
-export default App;
+export default DataFetcher;
